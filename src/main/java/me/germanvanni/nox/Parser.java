@@ -121,7 +121,7 @@ public class Parser {
     }
 
     private Token advance(){
-        if(isAtEnd()) current++;
+        if(!isAtEnd()) current++;
         return previous();
     }
 

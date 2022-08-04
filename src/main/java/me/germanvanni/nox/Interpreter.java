@@ -1,0 +1,141 @@
+package me.germanvanni.nox;
+
+public class Interpreter implements Expr.Visitor<Object>{
+
+    void interpret(Expr expression){
+        try{
+            Object value = evaluate(expression);
+            System.out.println((stringify(value)));
+        } catch ( RuntimeError e){
+            Nox.runtimeError(e);
+        }
+    }
+
+    @Override
+    public Object visitBinaryExpr(Expr.Binary expr) {
+        Object left = evaluate(expr.left);
+        Object right = evaluate(expr.right);
+
+        switch(expr.operator.type){
+            case GREATER:
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left > (double)right;
+            case GREATER_EQUAL:
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left >= (double)right;
+            case LESS:
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left < (double)right;
+            case LESS_EQUAL:
+                checkNumberOperands(expr.operator, left, right);
+                return (double) left <= (double)right;
+            case MINUS:
+                checkNumberOperands(expr.operator, left, right);
+                return (double)left - (double)right;
+            case PLUS:
+                //we allow implicit conversion of numbers to strings
+                //("2" + 2 == "22" && 2 + "2" == "22") is true
+                if(left instanceof Double){
+
+                    if(right instanceof Double) {
+                        return (double) left + (double) right;
+                    }else if (right instanceof String){
+                        String strLeft =  Double.toString((double)left);
+                        if(strLeft.endsWith(".0")){
+                            strLeft = strLeft.substring(0, strLeft.length() - 2);
+                        }
+                        return strLeft + (String)right;
+                    }
+                }
+                if(left instanceof String){
+                    if(right instanceof String){
+                        return (String)left + (String)right;
+                    } else if (right instanceof Double){
+                        String strRight =  Double.toString((double)right);
+                        if(strRight.endsWith(".0")){
+                            strRight = strRight.substring(0, strRight.length() - 2);
+                        }
+                        return (String)left + strRight;
+                    }
+                }
+                throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings");
+            case SLASH:
+                checkNumberOperands(expr.operator, left, right);
+                double divisor = (double)right;
+                if(divisor == 0) throw new RuntimeError(expr.operator, "Can't divide by 0!");
+                return (double)left / (double)right;
+            case STAR:
+                checkNumberOperands(expr.operator, left, right);
+                return (double)left * (double)right;
+            case BANG_EQUAL: return !isEqual(left, right);
+            case EQUAL_EQUAL: return isEqual(left, right);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitGroupingExpr(Expr.Grouping expr) {
+        return evaluate(expr.expression);
+    }
+
+    @Override
+    public Object visitLiteralExpr(Expr.Literal expr) {
+        return expr.value;
+    }
+
+    @Override
+    public Object visitUnaryExpr(Expr.Unary expr) {
+        Object right = evaluate(expr.right);
+        switch(expr.operator.type){
+            case BANG:
+                return !isTruthy(right);
+            case MINUS:
+                checkNumberOperand(expr.operator, right);
+                return -(double)right;
+
+        }
+        return null;
+    }
+
+    private Object evaluate(Expr expr){
+        return expr.accept(this);
+    }
+
+    private boolean isTruthy(Object object){
+        //"null" and "false" are false, everything else is true:
+        if(object == null) return false;
+
+        if(object instanceof Boolean) return (boolean)object;
+
+        return true;
+    }
+
+    private boolean isEqual(Object a, Object b){
+        if(a == null && b == null) return true;
+        if(a == null) return false;
+        return a.equals(b);
+    }
+    private void checkNumberOperand(Token operator, Object operand){
+        if(operand instanceof Double) return;
+        throw new RuntimeError(operator, "Operator must be a number");
+    }
+    private void checkNumberOperands(Token operator, Object left, Object right){
+        if(left instanceof Double && right instanceof Double) return;
+        throw new RuntimeError(operator, "Operands must be numbers");
+    }
+
+    private String stringify (Object object){
+        if(object == null) return "null";
+
+        if(object instanceof Double){
+            String t = object.toString();
+            if(t.endsWith(".0")){
+                t = t.substring(0, t.length() - 2);
+            }
+            return t;
+        }
+
+        return object.toString();
+    }
+}
