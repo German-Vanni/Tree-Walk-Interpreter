@@ -1,6 +1,6 @@
 print "string literal"
 fn functionName(oneIdentifier){
-    print oneIdentifier;
+    print (oneIdentifier);
 }/*
 
 fn secondFunctionName(anotherIdentifier){
