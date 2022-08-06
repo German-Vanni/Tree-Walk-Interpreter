@@ -1,5 +1,6 @@
 package me.germanvanni.nox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import  static me.germanvanni.nox.TokenType.*;
@@ -15,16 +16,56 @@ public class Parser {
 
     }
 
-    Expr parse(){
-        try{
-            return expression();
-        } catch(ParseError error){
-            return null;
+    List<Stmt> parse(){
+         List<Stmt> statements = new ArrayList<>();
+         while(!isAtEnd()){
+             statements.add(declaration());
+         }
+         return statements;
+    }
+
+    private Stmt statement(){
+        if(match(PRINT)) return printStatement();
+        return expressionStatement();
+    }
+
+    private Stmt varDeclaration(){
+        Token name = consume(IDENTIFIER, "Expected: variable name");
+
+        Expr initializer = null;
+        if(match(EQUAL)){
+            initializer = expression();
         }
+
+        consume(SEMICOLON, "Expected: ';' after variable declaration");
+        return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt printStatement(){
+        Expr value = expression();
+        consume(SEMICOLON, "Expected: ';' ");
+        return new Stmt.Print(value);
+    }
+
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expected: ';' ");
+        return new Stmt.Expression(expr);
     }
 
     private Expr expression(){
         return equality();
+    }
+
+    private Stmt declaration(){
+        try{
+            if(match(VAR)) return varDeclaration();
+
+            return statement();
+        } catch(ParseError e){
+            synchronize();
+            return null;
+        }
     }
 
     private Expr equality(){
@@ -92,6 +133,10 @@ public class Parser {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expected ')' here");
             return new Expr.Grouping(expr);
+        }
+
+        if(match(IDENTIFIER)){
+            return new Expr.Variable(previous());
         }
 
         throw error(peek(), "Expected expression");

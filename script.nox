@@ -1,8 +1,3 @@
-print "string literal"
-fn functionName(oneIdentifier){
-    print (oneIdentifier);
-}/*
-
-fn secondFunctionName(anotherIdentifier){
-    functionName(*/"hello, world!");
-}
+print "superstring";
+print true;
+print 200.3 + 12;
