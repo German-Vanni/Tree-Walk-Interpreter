@@ -19,14 +19,17 @@ public class AstGenerator {
                 "Grouping : Expr expression",
                 "Literal  : Object value",
                 "Unary    : Token operator, Expr right",
-                "Variable : Token name"
+                "Variable : Token name",
+                "Logical  : Expr left, Token operator, Expr right"
         ));
 
         defineAst(outputDirectory, "Stmt", Arrays.asList(
+                "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Block      : List<Stmt> statements",
                 "Expression : Expr expression",
                 "Print      : Expr expression",
-                "Var        : Token name, Expr initializer"
+                "Var        : Token name, Expr initializer",
+                "While      : Expr Condition, Stmt body"
         ));
     }
 
