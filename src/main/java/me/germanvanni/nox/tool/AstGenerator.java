@@ -15,6 +15,7 @@ public class AstGenerator {
 
         defineAst(outputDirectory, "Expr", Arrays.asList(
                 "Assign   : Token name, Expr value",
+                "Call     : Expr callee, Token paren, List<Expr> arguments",
                 "Binary   : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
