@@ -28,6 +28,7 @@ public class AstGenerator {
                 "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Block      : List<Stmt> statements",
                 "Expression : Expr expression",
+                "Function   : Token name, List<Token> params, List<Stmt> body",
                 "Print      : Expr expression",
                 "Var        : Token name, Expr initializer",
                 "While      : Expr Condition, Stmt body"

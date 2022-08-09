@@ -183,12 +183,33 @@ public class Parser {
     private Stmt declaration(){
         try{
             if(match(VAR)) return varDeclaration();
-
+            if(match(FN)) return function("function");
             return statement();
         } catch(ParseError e){
             synchronize();
             return null;
         }
+    }
+
+    private Stmt.Function function(String kind){
+        Token name = consume(IDENTIFIER, "Expected " + kind + "name.");
+        List<Token> parameters = new ArrayList<>();
+        if(!check(RIGHT_PAREN)){
+            do {
+                if(parameters.size() >= 255){
+                    error(peek(), "Can't have more than 255 parameters.");
+                }
+
+                parameters.add(consume(IDENTIFIER, "Expected parameter name"));
+
+            } while(match(COMMA));
+        }
+
+        consume(RIGHT_PAREN, "Expected ')' after function parameters");
+
+        consume(LEFT_BRACE, "Expected '{' before " + kind + " body");
+        List<Stmt> body = block();
+        return new Stmt.Function(name, parameters, body);
     }
 
     private Expr equality(){
