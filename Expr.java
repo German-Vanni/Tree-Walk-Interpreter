@@ -1,4 +1,4 @@
-package me.germanvanni.nox
+package me.germanvanni.jlox
 
 import java.util.List;
 
