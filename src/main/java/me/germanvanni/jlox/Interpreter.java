@@ -1,11 +1,14 @@
 package me.germanvanni.jlox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
 
     Environment globals = new Environment();
+    private final Map<Expr, Integer> locals = new HashMap<>();
     private Environment environment = globals;
 
     Interpreter(){
@@ -34,6 +37,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
 
     private void execute(Stmt statement){
         statement.accept(this);
+    }
+
+    void resolve(Expr expr, int depth){
+        locals.put(expr, depth);
     }
 
     void executeBlock(List<Stmt> statements, Environment environment){
@@ -216,7 +223,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>{
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
-        while(isTruthy(evaluate(stmt.Condition))){
+        while(isTruthy(evaluate(stmt.condition))){
             execute(stmt.body);
         }
         return null;

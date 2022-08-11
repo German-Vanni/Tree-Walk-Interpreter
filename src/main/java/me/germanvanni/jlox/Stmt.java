@@ -134,11 +134,11 @@ static class Var extends Stmt {
 
 static class While extends Stmt {
 
-    final Expr Condition;
+    final Expr condition;
     final Stmt body;
 
-    While(Expr Condition, Stmt body) {
-        this.Condition = Condition;
+    While(Expr condition, Stmt body) {
+        this.condition = condition;
         this.body = body;
     }
 
