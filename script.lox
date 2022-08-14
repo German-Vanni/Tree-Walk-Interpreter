@@ -14,3 +14,7 @@ fn sumOfFirstSquares(N){
 }
 
 print sumOfFirstSquares(5);
+
+class Person{}
+var person = Person();
+print person;

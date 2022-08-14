@@ -2,7 +2,7 @@ package me.germanvanni.jlox;
 
 import java.util.List;
 
-public class LoxFunction implements LoxCallable{
+class LoxFunction implements LoxCallable{
 
     private final Stmt.Function declaration;
     private final Environment closure;

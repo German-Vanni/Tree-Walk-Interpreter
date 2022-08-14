@@ -194,6 +194,7 @@ public class Parser {
 
     private Stmt declaration(){
         try{
+            if(match(CLASS)) return classDeclaration();
             if(match(VAR)) return varDeclaration();
             if(match(FN)) return function("function");
             return statement();
@@ -201,6 +202,20 @@ public class Parser {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt classDeclaration(){
+        Token name = consume(IDENTIFIER, "Expected class name.");
+        consume(LEFT_BRACE, "Expected '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+
+        while(!check(RIGHT_BRACE) && !isAtEnd()){
+            methods.add(function("method"));
+        }
+        consume(RIGHT_BRACE, "Expected '}' after class body.");
+
+        return new Stmt.Class(name, methods);
     }
 
     private Stmt.Function function(String kind){

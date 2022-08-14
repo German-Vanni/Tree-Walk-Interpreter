@@ -27,12 +27,13 @@ public class AstGenerator {
         defineAst(outputDirectory, "Stmt", Arrays.asList(
                 "If         : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Block      : List<Stmt> statements",
+                "Class      : Token name, List<Stmt.Function> methods",
                 "Expression : Expr expression",
                 "Function   : Token name, List<Token> params, List<Stmt> body",
                 "Print      : Expr expression",
                 "Return     : Token keyword, Expr value",
                 "Var        : Token name, Expr initializer",
-                "While      : Expr Condition, Stmt body"
+                "While      : Expr condition, Stmt body"
         ));
     }
 
@@ -40,7 +41,7 @@ public class AstGenerator {
         String path = outputDirectory + "/" + baseName + ".java";
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-        writer.println("package me.germanvanni.lox;");
+        writer.println("package me.germanvanni.jlox;");
         writer.println();
         writer.println("import java.util.List;");
         writer.println();

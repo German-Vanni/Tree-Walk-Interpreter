@@ -2,7 +2,7 @@ package me.germanvanni.jlox;
 
 import java.util.List;
 
-public interface LoxCallable {
+interface LoxCallable {
     Object call(Interpreter interpreter, List<Object> arguments);
     int arity();
 }
