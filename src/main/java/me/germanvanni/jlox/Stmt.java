@@ -155,8 +155,8 @@ static class While extends Stmt {
     final Expr condition;
     final Stmt body;
 
-    While(Expr Condition, Stmt body) {
-        this.condition = Condition;
+    While(Expr condition, Stmt body) {
+        this.condition = condition;
         this.body = body;
     }
 
