@@ -6,31 +6,36 @@ class LoxFunction implements LoxCallable{
 
     private final Stmt.Function declaration;
     private final Environment closure;
-    LoxFunction(Stmt.Function declaration, Environment closure){
+    private final boolean isConstructor;
+
+    LoxFunction(Stmt.Function declaration, Environment closure, boolean isConstructor){
 
         this.declaration = declaration;
         this.closure = closure;
+        this.isConstructor = isConstructor;
     }
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
-        Environment enviroment = new Environment(interpreter.globals);
+        Environment environment = new Environment(interpreter.globals);
         for(int i = 0; i < declaration.params.size(); i++){
-            enviroment.define(declaration.params.get(i).lexeme, arguments.get(i));
+            environment.define(declaration.params.get(i).lexeme, arguments.get(i));
         }
 
         try{
-            interpreter.executeBlock(declaration.body, enviroment);
+            interpreter.executeBlock(declaration.body, environment);
         }catch (Return returnValue){
+            if(isConstructor) return closure.getAt(0, "this");
+
             return returnValue.value;
         }
-
+        if(isConstructor) return closure.getAt(0, "this");
         return null;
     }
 
     LoxFunction bind(LoxInstance instace){
         Environment environment = new Environment(closure);
         environment.define("this", instace);
-        return new LoxFunction(declaration, environment);
+        return new LoxFunction(declaration, environment, isConstructor);
     }
 
     @Override
