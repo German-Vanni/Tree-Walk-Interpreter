@@ -24,7 +24,8 @@ public class AstGenerator {
                 "Variable : Token name",
                 "Logical  : Expr left, Token operator, Expr right",
                 "Set      : Expr object, Token name, Expr value",
-                "This     : Token keyword"
+                "This     : Token keyword",
+                "Super    : Token keyword, Token method"
         ));
 
         defineAst(outputDirectory, "Stmt", Arrays.asList(

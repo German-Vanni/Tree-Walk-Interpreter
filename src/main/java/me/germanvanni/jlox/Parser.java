@@ -343,6 +343,13 @@ public class Parser {
 
         if(match(NUMBER, STRING)) return new Expr.Literal(previous().literal);
 
+        if(match(SUPER)){
+            Token keyword = previous();
+            consume(DOT, "Expected '.' after 'super'");
+            Token method = consume(IDENTIFIER, "Expected superclass method name.");
+            return new Expr.Super(keyword, method);
+        }
+
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expected ')' here");
